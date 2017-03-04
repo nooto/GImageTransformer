@@ -75,9 +75,10 @@
 
     [panel beginSheetModalForWindow:[NSApplication sharedApplication].mainWindow completionHandler:^(NSInteger result) {
         if (result == NSModalResponseOK) {
-            NSMutableArray* filePaths = [[NSMutableArray alloc] init];
+//            NSMutableArray* filePaths = [[NSMutableArray alloc] init];
             NSURL* element = panel.URLs.firstObject;
-            [self.mFileField selectText:[element path]];
+            [self.mComboBox selectText:[element path]];
+//?            [self.mComboBox addItemWithObjectValue:[element path]];
 //            for (NSURL* elemnet in [panel URLs]) {
 //                [filePaths addObject:[elemnet path]];
 //            }
@@ -95,6 +96,5 @@
 - (IBAction)createImageAction:(id)sender{
 
 }
-
 
 @end

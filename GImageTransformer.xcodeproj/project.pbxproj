@@ -12,6 +12,7 @@
 		E20B5E291E694A4300549C19 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E20B5E281E694A4300549C19 /* ViewController.m */; };
 		E20B5E2B1E694A4300549C19 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E20B5E2A1E694A4300549C19 /* Assets.xcassets */; };
 		E20B5E2E1E694A4300549C19 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E20B5E2C1E694A4300549C19 /* Main.storyboard */; };
+		E2D4F90E1E6A9F9E00321650 /* NSImage+category.m in Sources */ = {isa = PBXBuildFile; fileRef = E2D4F90D1E6A9F9E00321650 /* NSImage+category.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,8 @@
 		E20B5E2A1E694A4300549C19 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E20B5E2D1E694A4300549C19 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		E20B5E2F1E694A4300549C19 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E2D4F90C1E6A9F9E00321650 /* NSImage+category.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSImage+category.h"; sourceTree = "<group>"; };
+		E2D4F90D1E6A9F9E00321650 /* NSImage+category.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSImage+category.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +63,8 @@
 				E20B5E221E694A4300549C19 /* AppDelegate.m */,
 				E20B5E271E694A4300549C19 /* ViewController.h */,
 				E20B5E281E694A4300549C19 /* ViewController.m */,
+				E2D4F90C1E6A9F9E00321650 /* NSImage+category.h */,
+				E2D4F90D1E6A9F9E00321650 /* NSImage+category.m */,
 				E20B5E2A1E694A4300549C19 /* Assets.xcassets */,
 				E20B5E2C1E694A4300549C19 /* Main.storyboard */,
 				E20B5E2F1E694A4300549C19 /* Info.plist */,
@@ -148,6 +153,7 @@
 			files = (
 				E20B5E291E694A4300549C19 /* ViewController.m in Sources */,
 				E20B5E261E694A4300549C19 /* main.m in Sources */,
+				E2D4F90E1E6A9F9E00321650 /* NSImage+category.m in Sources */,
 				E20B5E231E694A4300549C19 /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -296,6 +302,7 @@
 				E20B5E341E694A4300549C19 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

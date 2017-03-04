@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "9588EF34E234FB91774E4933D8FE06351FA12FCC",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "56F249B7DB0C2BF26ADFC69C936CBD544297FF09" : 9223372036854775807,
+    "9588EF34E234FB91774E4933D8FE06351FA12FCC" : 9223372036854775807
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "31CC7E35-8412-433D-B7F1-0A574221DC1A",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "56F249B7DB0C2BF26ADFC69C936CBD544297FF09" : "",
+    "9588EF34E234FB91774E4933D8FE06351FA12FCC" : "GImageTransformer\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "GImageTransformer",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "GImageTransformer.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:nooto\/SMSTimers.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "56F249B7DB0C2BF26ADFC69C936CBD544297FF09"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:nooto\/GImageTransformer.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "9588EF34E234FB91774E4933D8FE06351FA12FCC"
+    }
+  ]
+}
