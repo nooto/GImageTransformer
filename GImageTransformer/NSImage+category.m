@@ -161,8 +161,6 @@
 
     //save image to file
 - (BOOL)saveImage:(NSImage*)image                      //source image
-         saveType:(NSBitmapImageFileType)storageType   //save type "NSJPEGFileType"
-       properties:(NSDictionary *)properties         //properties "NSImageCompressionFactor = (NSNumber)0.8"
          ToTarget:(NSString *) targePath               //save path
 {
     NSData *tempdata;
@@ -170,7 +168,7 @@
     BOOL reflag = NO;
     [image lockFocus];
     srcImageRep = [NSBitmapImageRep imageRepWithData:[image TIFFRepresentation]];
-    tempdata = [srcImageRep representationUsingType:storageType properties:properties];
+    tempdata = [srcImageRep representationUsingType:NSBitmapImageFileTypePNG properties:@{NSImageCompressionFactor:@(1)}];
     reflag = [tempdata writeToFile:targePath atomically:YES];
     [image unlockFocus];
     return reflag;

@@ -9,12 +9,15 @@
 #define KHIGHT  @"hight"
 #define KNAME   @"name"
 
+#define KComboxSourceData   @"ComboxSourceData"
+
+
 #import "ViewController.h"
 
 #import "NSImageProperyCellView.h"
 #import "NSImage+category.h"
 
-@interface ViewController ()  <NSTableViewDataSource, NSTableViewDelegate>
+@interface ViewController ()  <NSTableViewDataSource, NSTableViewDelegate, NSComboBoxDelegate, NSComboBoxDataSource>
 @property (nonatomic, weak) IBOutlet  NSComboBox  *mComboBox;
 @property (nonatomic, weak) IBOutlet NSTableView *mTableView;
 @property (nonatomic, strong) NSMutableArray  *mSourceData;
@@ -22,7 +25,11 @@
 @property (nonatomic, weak) IBOutlet NSTextField *mWidhtTextFile;
 @property (nonatomic, weak) IBOutlet NSTextField *mHightTextFile;
 @property (nonatomic, weak) IBOutlet NSTextField *mNameTextFile;
+
+@property (nonatomic, strong) NSMutableArray *mComboxSourceData;
 @end
+
+
 
 @implementation ViewController
 
@@ -42,6 +49,7 @@
     self.mHightTextFile.cell.formatter       = formater;
 
     self.mTableView.rowHeight = 35;
+    
 }
 
 -(NSMutableArray*)mSourceData{
@@ -49,6 +57,37 @@
         _mSourceData = [[NSMutableArray alloc] initWithCapacity:1];
     }
     return _mSourceData;
+}
+
+-(NSMutableArray*)mComboxSourceData{
+    if (!_mComboxSourceData) {
+        _mComboxSourceData = [[NSMutableArray alloc] initWithCapacity:1];
+      id  sourceData =  [[NSUserDefaults standardUserDefaults] objectForKey:KComboxSourceData];
+        if ([sourceData isKindOfClass:[NSArray class]]) {
+            [_mComboxSourceData addObjectsFromArray:sourceData];
+        }
+    }
+    return _mComboxSourceData;
+}
+
+#pragma mark - NSCombox
+-(NSInteger)numberOfItemsInComboBox:(NSComboBox *)comboBox{
+    return self.mComboxSourceData.count;
+}
+
+-(id)comboBox:(NSComboBox *)comboBox objectValueForItemAtIndex:(NSInteger)index{
+    if (index < self.mComboxSourceData.count) {
+        return self.mComboxSourceData[index];
+    }
+    else{
+        return nil;
+    }
+}
+
+-(void)comboBoxSelectionDidChange:(NSNotification *)notification{
+    if (self.mComboBox.selectedTag < self.mComboxSourceData.count) {
+        self.mComboBox.stringValue = self.mComboxSourceData[self.mComboBox.selectedTag];
+    }
 }
 
 -(void)addNewImageWithWidth:(NSInteger)widht hight:(NSInteger)hight name:(NSString*)name{
@@ -90,7 +129,16 @@
     [panel beginSheetModalForWindow:[NSApplication sharedApplication].mainWindow completionHandler:^(NSInteger result) {
         if (result == NSModalResponseOK) {
             NSURL* element = panel.URLs.firstObject;
-            [self.mComboBox selectText:[element path]];
+
+            [self.mComboxSourceData insertObject:[element path] atIndex:0];
+
+            [[NSUserDefaults standardUserDefaults] setValue:self.mComboxSourceData forKey:KComboxSourceData];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+
+            [self.mComboBox reloadData];
+//            [self.mComboBox insertItemWithObjectValue:[element path] atIndex:0];
+            self.mComboBox.stringValue = [element path];
+
         }
     }];
 }
@@ -146,14 +194,31 @@
 
 }
 - (IBAction)createImageAction:(id)sender{
-    NSString *homedic = NSHomeDirectory(); // 用户目录
-    NSString *userName = NSUserName(); // 用户目录
-    homedic =    NSHomeDirectoryForUser(userName); //指定用户名的用户目录
-    NSString *DesktopPath = [NSString stringWithFormat:@"%@/%@", homedic, @"Desktop"];
-    NSLog(@"%@", DesktopPath);
+    if (self.mSourceData.count) {
+        NSImage *sourceImage = [[NSImage alloc] initWithContentsOfFile:self.mComboBox.stringValue];
+        if (sourceImage.isValid) {
 
-    NSImage *image = [[NSImage alloc] initWithContentsOfFile:self.mComboBox.stringValue];
-    image = [NSImage imageResize:image newSize:CGSizeMake(100, 100)];
+            NSString *homedic = NSHomeDirectory(); // 用户目录
+            NSString *userName = NSUserName(); // 用户目录
+            homedic =    NSHomeDirectoryForUser(userName); //指定用户名的用户目录
+            NSString *DesktopPath = [NSString stringWithFormat:@"%@/%@/%@", homedic, @"Desktop",@"ImageTransformer"];
+            NSLog(@"%@", DesktopPath);
+            NSFileManager *fileManager =  [NSFileManager defaultManager];
+            [fileManager removeItemAtPath:DesktopPath error:nil];
+            [fileManager  createDirectoryAtPath:DesktopPath withIntermediateDirectories:yearMask attributes:nil error:nil];
+
+            for (NSInteger i = 0; i < self.mSourceData.count; i++) {
+                NSDictionary *dict =self.mSourceData[i];
+                if ([dict isKindOfClass:[NSDictionary class]]) {
+                    NSImage  *newImage = [NSImage imageResize:sourceImage newSize:CGSizeMake([dict[KWIDTH] integerValue], [dict[KHIGHT] integerValue])];
+                    NSString *newPath = [NSString stringWithFormat:@"%@/%@.png", DesktopPath, @(i)];
+                    [newImage saveImage:newImage ToTarget:newPath];
+                }
+            }
+            
+
+        }
+    }
 }
 
 @end
