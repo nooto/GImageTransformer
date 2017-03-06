@@ -14,7 +14,11 @@
 @implementation NSImage (category)
 
     //缩放到目的大小，太小了不缩放添加背景
-+ (NSImage *)createScalesImage:(NSImage *)sourceImage flipFlag:(BOOL)bFlip amountReflected:(float)fraction
++ (NSImage *)createScalesImage:(NSImage *)sourceImage
+                      newWidth:(NSInteger)bgWidth
+                      newHeight:(NSInteger)bgHeight
+                      flipFlag:(BOOL)bFlip
+               amountReflected:(float)fraction
 {
         //source picture size
     NSSize srcSize = [sourceImage size];
@@ -23,8 +27,8 @@
     unsigned int uiHeight= srcSize.height;
 
         //target bg picture size
-    unsigned int bgWidth = PIC_WIDTH;
-    unsigned int bgHeight = PIC_HEIGHT;
+//    unsigned int bgWidth = PIC_WIDTH;
+//    unsigned int bgHeight = PIC_HEIGHT;
     NSSize tarSize =NSMakeSize(bgWidth, bgHeight);
 
     if(uiWidth>=bgWidth && uiHeight >= bgHeight)
@@ -137,7 +141,23 @@
     return rotated;
     
 }
-
++ (NSImage *)imageResize:(NSImage*)anImage newSize:(NSSize)newSize {
+    NSImage *sourceImage = anImage;
+//    [sourceImage setScalesWhenResized:YES];
+        // Report an error if the source isn't a valid image
+    if (![sourceImage isValid]){
+        NSLog(@"Invalid Image");
+    } else {
+        NSImage *smallImage = [[NSImage alloc] initWithSize: newSize];
+        [smallImage lockFocus];
+        [sourceImage setSize: newSize];
+        [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
+        [sourceImage drawAtPoint:NSZeroPoint fromRect:CGRectMake(0, 0, newSize.width, newSize.height) operation:NSCompositingOperationCopy fraction:1.0];
+        [smallImage unlockFocus];
+        return smallImage;
+    }
+    return nil;
+}
 
     //save image to file
 - (BOOL)saveImage:(NSImage*)image                      //source image

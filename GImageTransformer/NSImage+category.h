@@ -9,5 +9,5 @@
 #import <Cocoa/Cocoa.h>
 
 @interface NSImage (category)
-
++ (NSImage *)imageResize:(NSImage*)anImage newSize:(NSSize)newSize;
 @end
