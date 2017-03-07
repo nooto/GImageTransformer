@@ -8,16 +8,21 @@
 
 #import "AppDelegate.h"
 
-@interface AppDelegate ()
-
+@interface AppDelegate ()<NSWindowDelegate>
+@property (nonatomic, strong) IBOutlet NSWindow *keyWindow;
 @end
 
 @implementation AppDelegate
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
     // Insert code here to initialize your application
-}
+    [NSApplication sharedApplication].keyWindow.delegate = self;
 
+}
+- (NSSize)windowWillResize:(NSWindow *)sender toSize:(NSSize)frameSize{
+    NSLog(@"%f %f",frameSize.width, frameSize.height);
+    return frameSize;
+}
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
     // Insert code here to tear down your application

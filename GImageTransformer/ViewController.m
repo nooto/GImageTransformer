@@ -17,7 +17,7 @@
 #import "NSImageProperyCellView.h"
 #import "NSImage+category.h"
 
-@interface ViewController ()  <NSTableViewDataSource, NSTableViewDelegate, NSComboBoxDelegate, NSComboBoxDataSource>
+@interface ViewController ()  <NSTableViewDataSource, NSTableViewDelegate, NSComboBoxDelegate, NSComboBoxDataSource, NSWindowDelegate>
 @property (nonatomic, weak) IBOutlet  NSComboBox  *mComboBox;
 @property (nonatomic, weak) IBOutlet NSTableView *mTableView;
 @property (nonatomic, strong) NSMutableArray  *mSourceData;
@@ -36,6 +36,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+    [NSApplication sharedApplication].keyWindow.delegate = self;
+    
     // Do any additional setup after loading the view.
     NSInteger maxValue, minValue;
     maxValue = 5000;
@@ -153,6 +155,10 @@
         [self.mTableView endUpdates];
     }
 }
+- (NSSize)windowWillResize:(NSWindow *)sender toSize:(NSSize)frameSize{
+    NSLog(@"%f %f",frameSize.width, frameSize.height);
+    return frameSize;
+}
 
 - (IBAction)addImageFileAction:(id)sender{
     if (self.mWidhtTextFile.stringValue.length <= 0) {
@@ -211,7 +217,12 @@
                 NSDictionary *dict =self.mSourceData[i];
                 if ([dict isKindOfClass:[NSDictionary class]]) {
                     NSImage  *newImage = [NSImage imageResize:sourceImage newSize:CGSizeMake([dict[KWIDTH] integerValue], [dict[KHIGHT] integerValue])];
-                    NSString *newPath = [NSString stringWithFormat:@"%@/%@.png", DesktopPath, @(i)];
+                    NSString *newPath = [NSString stringWithFormat:@"%@/%@.png", DesktopPath,
+
+                                         [NSString stringWithFormat:@"%ld*%ld",
+                                          [dict[KWIDTH] integerValue],
+                                          [dict[KHIGHT] integerValue]]
+                                         ];
                     [newImage saveImage:newImage ToTarget:newPath];
                 }
             }
