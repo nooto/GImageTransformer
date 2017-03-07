@@ -15,8 +15,6 @@
 @property (nonatomic, weak) IBOutlet  NSTextField *mWidth;
 @property (nonatomic, weak) IBOutlet  NSTextField *mHidthText;
 @property (nonatomic, weak) IBOutlet  NSTextField *mHidth;
-@property (nonatomic, weak) IBOutlet  NSTextField *mNameText;
-@property (nonatomic, weak) IBOutlet  NSTextField *mName;
 @end
 
 @implementation NSImageProperyCellView
@@ -29,7 +27,6 @@
     _mCurDict = mCurDict;
     [self.mWidth setStringValue:mCurDict[KWIDTH]];
     [self.mHidth setStringValue:mCurDict[KHIGHT]];
-    [self.mName setStringValue:mCurDict[KNAME]];
 
 }
 @end

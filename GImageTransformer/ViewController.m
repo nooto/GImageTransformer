@@ -17,16 +17,19 @@
 #import "NSImageProperyCellView.h"
 #import "NSImage+category.h"
 
-@interface ViewController ()  <NSTableViewDataSource, NSTableViewDelegate, NSComboBoxDelegate, NSComboBoxDataSource, NSWindowDelegate>
+@interface ViewController ()  <NSTableViewDataSource, NSTableViewDelegate, NSComboBoxDelegate, NSComboBoxDataSource, NSWindowDelegate,NSTextDelegate >
 @property (nonatomic, weak) IBOutlet  NSComboBox  *mComboBox;
 @property (nonatomic, weak) IBOutlet NSTableView *mTableView;
 @property (nonatomic, strong) NSMutableArray  *mSourceData;
 
 @property (nonatomic, weak) IBOutlet NSTextField *mWidhtTextFile;
 @property (nonatomic, weak) IBOutlet NSTextField *mHightTextFile;
-@property (nonatomic, weak) IBOutlet NSTextField *mNameTextFile;
 
 @property (nonatomic, strong) NSMutableArray *mComboxSourceData;
+
+@property (nonatomic, assign) NSInteger initWidth;
+@property (nonatomic, assign) NSInteger initHight;
+
 @end
 
 
@@ -35,6 +38,11 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(controlTextDidChange:)
+                                                 name:NSTextDidChangeNotification
+                                               object:nil];
 
     [NSApplication sharedApplication].keyWindow.delegate = self;
     
@@ -145,7 +153,6 @@
     }];
 }
 
-
 - (IBAction)deleteImageFileAction:(id)sender{
     if (self.mSourceData.count >0 && self.mTableView.selectedRow < self.mSourceData.count) {
         [self.mTableView beginUpdates];
@@ -160,37 +167,45 @@
     return frameSize;
 }
 
+- (void)controlTextDidChange:(NSNotification *)notification{
+    if ([self.mWidhtTextFile isEqualTo:notification.object]) {
+        self.initWidth = self.mWidhtTextFile.integerValue;
+    }
+    else if ([self.mHightTextFile isEqualTo:notification.object]){
+        self.initHight = self.mHightTextFile.integerValue;
+    }
+}
+
+- (IBAction)multipleButton:(NSButton*)sender{
+    if (self.initWidth > 0) {
+        [self.mWidhtTextFile setIntValue:(int)(self.initWidth * sender.tag)];
+    }
+
+    if (self.initHight > 0) {
+        [self.mHightTextFile setIntValue:(int)(self.initHight * sender.tag)];
+    }
+}
+
 - (IBAction)addImageFileAction:(id)sender{
     if (self.mWidhtTextFile.stringValue.length <= 0) {
-//        NSAlert *alert = [NSAlert alertWithMessageText:@"messageText"
-//                                         defaultButton:@"defaultButton"
-//                                       alternateButton:@"alternateButton"
-//                                           otherButton:@"otherButton"
-//                             informativeTextWithFormat:@"informativeText"];
-//
-//        NSUInteger action = [alert runModal];
-//            //响应window的按钮事件
-//        if(action == NSAlertDefaultReturn)
-//        {
-//            NSLog(@"defaultButton clicked!");
-//        }
-//        else if(action == NSAlertAlternateReturn )
-//        {
-//            NSLog(@"alternateButton clicked!");
-//        }
-//        else if(action == NSAlertOtherReturn)
-//        {
-//            NSLog(@"otherButton clicked!");
-//        }
+        NSAlert  *alert = [[NSAlert alloc] init];
+        [alert setMessageText:@"请指定要生成的图片宽度"];
+        [alert addButtonWithTitle:@"确定"];
+        [alert runModal];
+        [self.mWidhtTextFile becomeFirstResponder];
+        return;
     }
+
     if (self.mHightTextFile.stringValue.length <= 0) {
-
+        NSAlert  *alert = [[NSAlert alloc] init];
+        [alert setMessageText:@"请指定要生成的图片高度"];
+        [alert addButtonWithTitle:@"确定"];
+        [alert runModal];
+        [self.mHightTextFile becomeFirstResponder];
+        return;
     }
-    if (self.mNameTextFile.stringValue.length <= 0) {
 
-    }
-
-    [self addNewImageWithWidth:self.mWidhtTextFile.integerValue hight:self.mHightTextFile.integerValue name:self.mNameTextFile.stringValue];
+    [self addNewImageWithWidth:self.mWidhtTextFile.integerValue hight:self.mHightTextFile.integerValue name:[NSString stringWithFormat:@"%ld*%ld", (long)self.mWidhtTextFile.integerValue,(long)self.mHightTextFile.integerValue]];
 
 
     [self.mTableView beginUpdates];
@@ -200,10 +215,9 @@
 
 }
 - (IBAction)createImageAction:(id)sender{
-    if (self.mSourceData.count) {
-        NSImage *sourceImage = [[NSImage alloc] initWithContentsOfFile:self.mComboBox.stringValue];
-        if (sourceImage.isValid) {
-
+    NSImage *sourceImage = [[NSImage alloc] initWithContentsOfFile:self.mComboBox.stringValue];
+    if (sourceImage.isValid) {
+        if (self.mSourceData.count) {
             NSString *homedic = NSHomeDirectory(); // 用户目录
             NSString *userName = NSUserName(); // 用户目录
             homedic =    NSHomeDirectoryForUser(userName); //指定用户名的用户目录
@@ -226,9 +240,37 @@
                     [newImage saveImage:newImage ToTarget:newPath];
                 }
             }
-            
 
+            NSAlert  *alert = [[NSAlert alloc] init];
+            [alert setMessageText:@"生成成功，点击查看"];
+            [alert addButtonWithTitle:@"查看"];
+            [alert addButtonWithTitle:@"取消"];
+
+
+            [alert beginSheetModalForWindow:[NSApplication sharedApplication].keyWindow completionHandler:^(NSModalResponse returnCode) {
+
+                if(returnCode == abs(NSModalResponseStop)){
+                    [[NSWorkspace sharedWorkspace] openFile:DesktopPath]; // 使用默认程序打开文件
+                }
+                else if(returnCode == abs(NSModalResponseAbort)){
+
+                }
+
+            }];
         }
+        else{
+
+            NSAlert  *alert = [[NSAlert alloc] init];
+            [alert setMessageText:@"请指定要生成的图片尺寸"];
+            [alert addButtonWithTitle:@"确定"];
+            [alert runModal];
+        }
+    }
+    else{
+        NSAlert  *alert = [[NSAlert alloc] init];
+        [alert setMessageText:@"没有选择源图片"];
+        [alert addButtonWithTitle:@"确定"];
+        [alert runModal];
     }
 }
 
