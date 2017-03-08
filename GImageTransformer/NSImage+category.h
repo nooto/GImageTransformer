@@ -10,6 +10,7 @@
 
 @interface NSImage (category)
 + (NSImage *)imageResize:(NSImage*)anImage newSize:(NSSize)newSize;
++ (NSImage*) resizeImage:(NSImage*)sourceImage size:(NSSize)size;
 
 - (BOOL)saveImage:(NSImage*)image                      //source image
          ToTarget:(NSString *) targePath;               //save path

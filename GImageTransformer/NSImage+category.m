@@ -141,7 +141,48 @@
     return rotated;
     
 }
+
++ (NSImage*) resizeImage:(NSImage*)sourceImage size:(NSSize)size{
+
+    NSRect targetFrame = NSMakeRect(0, 0, size.width, size.height);
+    NSImage*  targetImage = [[NSImage alloc] initWithSize:size];
+
+    NSSize sourceSize = [sourceImage size];
+
+    float ratioH = sourceSize.height/ size.height;
+    float ratioW = sourceSize.width / size.width;
+
+    NSRect cropRect = NSZeroRect;
+
+    if (ratioH >= ratioW) {
+        cropRect.size.width = floor (sourceSize.width / ratioH);
+        cropRect.size.height = size.height;
+    } else {
+        cropRect.size.width = size.width;
+        cropRect.size.height = floor(sourceSize.height / ratioW);
+    }
+
+    cropRect.origin.x = floor( (targetFrame.size.width - cropRect.size.width)/2 );
+    cropRect.origin.y = floor( (targetFrame.size.height - cropRect.size.height)/2 );
+
+    [targetImage lockFocus];
+
+    [sourceImage drawInRect:cropRect
+                   fromRect:CGRectMake(0, 0, sourceImage.size.width, sourceImage.size.height)       //portion of source image to draw
+                  operation:NSCompositingOperationCopy  //compositing operation
+                   fraction:1.0              //alpha (transparency) value
+             respectFlipped:YES              //coordinate system
+                      hints:@{NSImageHintInterpolation:
+                                  [NSNumber numberWithInt:NSImageInterpolationLow]}];
+
+
+    [targetImage unlockFocus];
+
+    return targetImage;
+}
+
 + (NSImage *)imageResize:(NSImage*)anImage newSize:(NSSize)newSize {
+
     NSImage *sourceImage = anImage;
 //    [sourceImage setScalesWhenResized:YES];
         // Report an error if the source isn't a valid image

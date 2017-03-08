@@ -7,8 +7,8 @@
 //
 #define KWIDTH  @"width"
 #define KHIGHT  @"hight"
-#define KNAME   @"name"
 
+#define KMAXINPUT  9999
 #define KComboxSourceData   @"ComboxSourceData"
 
 
@@ -17,22 +17,23 @@
 #import "NSImageProperyCellView.h"
 #import "NSImage+category.h"
 
-@interface ViewController ()  <NSTableViewDataSource, NSTableViewDelegate, NSComboBoxDelegate, NSComboBoxDataSource, NSWindowDelegate,NSTextDelegate >
+@interface ViewController ()  <NSTableViewDataSource, NSTableViewDelegate, NSComboBoxDelegate, NSComboBoxDataSource, NSWindowDelegate,NSTextDelegate, NSDraggingDestination>
 @property (nonatomic, weak) IBOutlet  NSComboBox  *mComboBox;
 @property (nonatomic, weak) IBOutlet NSTableView *mTableView;
 @property (nonatomic, strong) NSMutableArray  *mSourceData;
 
 @property (nonatomic, weak) IBOutlet NSTextField *mWidhtTextFile;
 @property (nonatomic, weak) IBOutlet NSTextField *mHightTextFile;
+@property (nonatomic, weak) IBOutlet NSImageView *mPreImageView;
 
 @property (nonatomic, strong) NSMutableArray *mComboxSourceData;
 
 @property (nonatomic, assign) NSInteger initWidth;
 @property (nonatomic, assign) NSInteger initHight;
 
+
+@property (nonatomic, strong) NSView *mBGView;
 @end
-
-
 
 @implementation ViewController
 
@@ -44,8 +45,8 @@
                                                  name:NSTextDidChangeNotification
                                                object:nil];
 
-    [NSApplication sharedApplication].keyWindow.delegate = self;
-    
+    [self.mTableView registerForDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType,nil]];
+
     // Do any additional setup after loading the view.
     NSInteger maxValue, minValue;
     maxValue = 5000;
@@ -57,9 +58,8 @@
     formater.minimum              = @(minValue);
     self.mWidhtTextFile.cell.formatter       = formater;
     self.mHightTextFile.cell.formatter       = formater;
+    self.mTableView.rowHeight = 45;
 
-    self.mTableView.rowHeight = 35;
-    
 }
 
 -(NSMutableArray*)mSourceData{
@@ -93,21 +93,21 @@
         return nil;
     }
 }
+- (IBAction)OnComboboxChanged:(id)sender{
+    [self.mPreImageView setImage:[[NSImage alloc] initWithContentsOfFile:self.mComboBox.stringValue]];
+}
 
 -(void)comboBoxSelectionDidChange:(NSNotification *)notification{
     if (self.mComboBox.selectedTag < self.mComboxSourceData.count) {
         self.mComboBox.stringValue = self.mComboxSourceData[self.mComboBox.selectedTag];
+        [self.mPreImageView setImage:[[NSImage alloc] initWithContentsOfFile:self.mComboBox.stringValue]];
     }
 }
 
--(void)addNewImageWithWidth:(NSInteger)widht hight:(NSInteger)hight name:(NSString*)name{
+-(void)addNewImageWithWidth:(NSInteger)widht hight:(NSInteger)hight{
     widht = labs(widht);
     hight = labs(hight);
-
-    if (name.length <= 0) {
-        name = [NSString stringWithFormat:@"%lu", (unsigned long)self.mSourceData.count];
-    }
-    [self.mSourceData addObject:@{KWIDTH:@(widht),KHIGHT:@(hight), KNAME:name}];
+    [self.mSourceData addObject:@{KWIDTH:@(widht),KHIGHT:@(hight)}];
 }
 
 - (void)setRepresentedObject:(id)representedObject {
@@ -148,10 +148,87 @@
             [self.mComboBox reloadData];
 //            [self.mComboBox insertItemWithObjectValue:[element path] atIndex:0];
             self.mComboBox.stringValue = [element path];
-
+            [self.mPreImageView setImage:[[NSImage alloc] initWithContentsOfFile:element.path]];
         }
     }];
 }
+
+#pragma mark - Destination Operations
+
+-(NSDragOperation) draggingEntered:(id<NSDraggingInfo>)sender
+{
+    NSPasteboard *pb =[sender draggingPasteboard];
+    NSArray *array=[pb types];
+    if ([array containsObject:NSFilenamesPboardType]) {
+        return NSDragOperationCopy;
+    }
+    return NSDragOperationNone;
+}
+
+    //
+-(BOOL) prepareForDragOperation:(id<NSDraggingInfo>)sender
+{
+    NSPasteboard *pb =[sender draggingPasteboard];
+    NSArray *list =[pb propertyListForType:NSFilenamesPboardType];
+    return YES;
+}
+
+
+
+-(IBAction)addAppIcon:(NSButton*)sender{
+    if (sender.tag == 1) {
+        [self.mSourceData removeAllObjects];
+
+        [self addNewImageWithWidth:40 hight:40];
+        [self addNewImageWithWidth:60 hight:60];
+
+        [self addNewImageWithWidth:29 hight:29];
+        [self addNewImageWithWidth:58 hight:58];
+        [self addNewImageWithWidth:87 hight:87];
+
+        [self addNewImageWithWidth:80 hight:80];
+        [self addNewImageWithWidth:120 hight:120];
+
+        [self addNewImageWithWidth:57 hight:57];
+        [self addNewImageWithWidth:114 hight:114];
+
+        [self addNewImageWithWidth:120 hight:120];
+        [self addNewImageWithWidth:180 hight:180];
+
+        [self addNewImageWithWidth:120 hight:90];
+        [self addNewImageWithWidth:180 hight:135];
+
+        [self addNewImageWithWidth:134 hight:100];
+
+        [self addNewImageWithWidth:148 hight:110];
+
+        [self addNewImageWithWidth:54 hight:40];
+        [self addNewImageWithWidth:81 hight:60];
+
+        [self addNewImageWithWidth:64 hight:48];
+        [self addNewImageWithWidth:96 hight:72];
+
+        [self addNewImageWithWidth:1024 hight:768];
+
+        [self.mTableView reloadData];
+    }
+    else{
+        [self.mSourceData removeAllObjects];
+
+        [self addNewImageWithWidth:16 hight:16];
+        [self addNewImageWithWidth:32 hight:32];
+
+        [self addNewImageWithWidth:64 hight:64];
+        [self addNewImageWithWidth:128 hight:128];
+        [self addNewImageWithWidth:256 hight:256];
+
+        [self addNewImageWithWidth:512 hight:512];
+        [self addNewImageWithWidth:1024 hight:1024];
+
+        [self.mTableView reloadData];
+    }
+}
+
 
 - (IBAction)deleteImageFileAction:(id)sender{
     if (self.mSourceData.count >0 && self.mTableView.selectedRow < self.mSourceData.count) {
@@ -169,10 +246,22 @@
 
 - (void)controlTextDidChange:(NSNotification *)notification{
     if ([self.mWidhtTextFile isEqualTo:notification.object]) {
-        self.initWidth = self.mWidhtTextFile.integerValue;
+        if (self.mWidhtTextFile.integerValue >= KMAXINPUT) {
+            [self.mWidhtTextFile setIntValue:KMAXINPUT];
+            self.initWidth = KMAXINPUT;
+        }
+        else{
+            self.initWidth = self.mWidhtTextFile.integerValue;
+        }
     }
     else if ([self.mHightTextFile isEqualTo:notification.object]){
-        self.initHight = self.mHightTextFile.integerValue;
+        if (self.mHightTextFile.integerValue >= KMAXINPUT) {
+            [self.mHightTextFile setIntValue:KMAXINPUT];
+            self.initHight = KMAXINPUT;
+        }
+        else{
+            self.initHight = self.mHightTextFile.integerValue;
+        }
     }
 }
 
@@ -205,7 +294,7 @@
         return;
     }
 
-    [self addNewImageWithWidth:self.mWidhtTextFile.integerValue hight:self.mHightTextFile.integerValue name:[NSString stringWithFormat:@"%ld*%ld", (long)self.mWidhtTextFile.integerValue,(long)self.mHightTextFile.integerValue]];
+    [self addNewImageWithWidth:self.mWidhtTextFile.integerValue hight:self.mHightTextFile.integerValue];
 
 
     [self.mTableView beginUpdates];
@@ -230,7 +319,8 @@
             for (NSInteger i = 0; i < self.mSourceData.count; i++) {
                 NSDictionary *dict =self.mSourceData[i];
                 if ([dict isKindOfClass:[NSDictionary class]]) {
-                    NSImage  *newImage = [NSImage imageResize:sourceImage newSize:CGSizeMake([dict[KWIDTH] integerValue], [dict[KHIGHT] integerValue])];
+//                    NSImage  *newImage = [NSImage imageResize:sourceImage newSize:CGSizeMake([dict[KWIDTH] integerValue], [dict[KHIGHT] integerValue])];
+                    NSImage  *newImage = [NSImage resizeImage:sourceImage size:CGSizeMake([dict[KWIDTH] integerValue], [dict[KHIGHT] integerValue])];
                     NSString *newPath = [NSString stringWithFormat:@"%@/%@.png", DesktopPath,
 
                                          [NSString stringWithFormat:@"%ld*%ld",
@@ -242,10 +332,10 @@
             }
 
             NSAlert  *alert = [[NSAlert alloc] init];
+            alert.icon = [NSImage imageNamed:@"AppIcon"];
             [alert setMessageText:@"生成成功，点击查看"];
             [alert addButtonWithTitle:@"查看"];
             [alert addButtonWithTitle:@"取消"];
-
 
             [alert beginSheetModalForWindow:[NSApplication sharedApplication].keyWindow completionHandler:^(NSModalResponse returnCode) {
 
@@ -259,8 +349,8 @@
             }];
         }
         else{
-
             NSAlert  *alert = [[NSAlert alloc] init];
+            alert.icon = [NSImage imageNamed:@"AppIcon"];
             [alert setMessageText:@"请指定要生成的图片尺寸"];
             [alert addButtonWithTitle:@"确定"];
             [alert runModal];
@@ -268,6 +358,7 @@
     }
     else{
         NSAlert  *alert = [[NSAlert alloc] init];
+        alert.icon = [NSImage imageNamed:@"AppIcon"];
         [alert setMessageText:@"没有选择源图片"];
         [alert addButtonWithTitle:@"确定"];
         [alert runModal];
