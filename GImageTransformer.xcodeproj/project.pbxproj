@@ -17,7 +17,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		E20B5E1E1E694A4300549C19 /* GImageTransformer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GImageTransformer.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E20B5E1E1E694A4300549C19 /* 一键图标.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "一键图标.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E20B5E211E694A4300549C19 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		E20B5E221E694A4300549C19 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		E20B5E251E694A4300549C19 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -54,7 +54,7 @@
 		E20B5E1F1E694A4300549C19 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E20B5E1E1E694A4300549C19 /* GImageTransformer.app */,
+				E20B5E1E1E694A4300549C19 /* 一键图标.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -103,7 +103,7 @@
 			);
 			name = GImageTransformer;
 			productName = GImageTransformer;
-			productReference = E20B5E1E1E694A4300549C19 /* GImageTransformer.app */;
+			productReference = E20B5E1E1E694A4300549C19 /* 一键图标.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -273,7 +273,7 @@
 				INFOPLIST_FILE = GImageTransformer/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.selfwork.GImageTransformer;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "一键图标";
 			};
 			name = Debug;
 		};
@@ -285,7 +285,7 @@
 				INFOPLIST_FILE = GImageTransformer/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.selfwork.GImageTransformer;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "一键图标";
 			};
 			name = Release;
 		};
