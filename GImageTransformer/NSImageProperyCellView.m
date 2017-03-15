@@ -23,6 +23,12 @@
     [super awakeFromNib];
 }
 
+-(IBAction)deleteButtonAction:(id)sender{
+    if (self.didSelectRmoveRow) {
+        self.didSelectRmoveRow(_mCurDict);
+    }
+}
+
 -(void)setMCurDict:(NSDictionary *)mCurDict{
     _mCurDict = mCurDict;
     [self.mWidth setStringValue:mCurDict[KWIDTH]];

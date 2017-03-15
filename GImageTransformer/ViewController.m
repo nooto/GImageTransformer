@@ -10,6 +10,7 @@
 
 #define KMAXINPUT  9999
 #define KComboxSourceData   @"ComboxSourceData"
+#define WS(weakSelf) __weak __typeof(&*self)weakSelf = self;
 
 
 #import "ViewController.h"
@@ -107,7 +108,9 @@
 -(void)addNewImageWithWidth:(NSInteger)widht hight:(NSInteger)hight{
     widht = labs(widht);
     hight = labs(hight);
-    [self.mSourceData addObject:@{KWIDTH:@(widht),KHIGHT:@(hight)}];
+    if (![self.mSourceData containsObject:@{KWIDTH:@(widht),KHIGHT:@(hight)}]) {
+        [self.mSourceData addObject:@{KWIDTH:@(widht),KHIGHT:@(hight)}];
+    }
 }
 
 - (void)setRepresentedObject:(id)representedObject {
@@ -126,6 +129,20 @@
     if (row >=0 && row < self.mSourceData.count) {
         [cellView setMCurDict:self.mSourceData[row]];
     }
+
+
+    WS(weakSelf);
+    [cellView setDidSelectRmoveRow:^(NSDictionary *dict) {
+        if ([weakSelf.mSourceData containsObject:dict]) {
+            [self.mTableView beginUpdates];
+            NSInteger index = [weakSelf.mSourceData indexOfObject:dict];
+            [weakSelf.mSourceData removeObject:dict];
+            NSRange  range = NSMakeRange(index, 1);
+            [self.mTableView  removeRowsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:range] withAnimation:NSTableViewAnimationSlideUp];
+
+            [self.mTableView endUpdates];
+        }
+    }];
 
     return cellView;
 }
@@ -166,12 +183,12 @@
 }
 
     //
--(BOOL) prepareForDragOperation:(id<NSDraggingInfo>)sender
-{
-    NSPasteboard *pb =[sender draggingPasteboard];
-    NSArray *list =[pb propertyListForType:NSFilenamesPboardType];
-    return YES;
-}
+//-(BOOL) prepareForDragOperation:(id<NSDraggingInfo>)sender
+//{
+//    NSPasteboard *pb =[sender draggingPasteboard];
+//    NSArray *list =[pb propertyListForType:NSFilenamesPboardType];
+//    return YES;
+//}
 
 
 
@@ -183,7 +200,6 @@
         [self addNewImageWithWidth:60 hight:60];
 
         [self addNewImageWithWidth:29 hight:29];
-        [self addNewImageWithWidth:58 hight:58];
         [self addNewImageWithWidth:87 hight:87];
 
         [self addNewImageWithWidth:80 hight:80];
@@ -192,7 +208,6 @@
         [self addNewImageWithWidth:57 hight:57];
         [self addNewImageWithWidth:114 hight:114];
 
-        [self addNewImageWithWidth:120 hight:120];
         [self addNewImageWithWidth:180 hight:180];
 
         [self addNewImageWithWidth:120 hight:90];
@@ -231,13 +246,16 @@
 
 
 - (IBAction)deleteImageFileAction:(id)sender{
-    if (self.mSourceData.count >0 && self.mTableView.selectedRow < self.mSourceData.count) {
-        [self.mTableView beginUpdates];
-        [self.mSourceData removeObjectAtIndex:self.mTableView.selectedRow];
-        NSRange  range = NSMakeRange(self.mTableView.selectedRow, 1);
-        [self.mTableView  removeRowsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:range] withAnimation:NSTableViewAnimationSlideUp];
-        [self.mTableView endUpdates];
-    }
+    [self.mSourceData removeAllObjects];
+    [self.mTableView reloadData];
+
+//    if (self.mSourceData.count >0 && self.mTableView.selectedRow < self.mSourceData.count) {
+//        [self.mTableView beginUpdates];
+//        [self.mSourceData removeObjectAtIndex:self.mTableView.selectedRow];
+//        NSRange  range = NSMakeRange(self.mTableView.selectedRow, 1);
+//        [self.mTableView  removeRowsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:range] withAnimation:NSTableViewAnimationSlideUp];
+//        [self.mTableView endUpdates];
+//    }
 }
 - (NSSize)windowWillResize:(NSWindow *)sender toSize:(NSSize)frameSize{
     NSLog(@"%f %f",frameSize.width, frameSize.height);

@@ -11,4 +11,6 @@
 @interface NSImageProperyCellView : NSTableCellView
 @property (nonatomic, strong) NSDictionary *mCurDict;
 @property (nonatomic, assign) CGFloat  mCellHight;
+
+@property (nonatomic, copy) void (^didSelectRmoveRow)(NSDictionary*dict);
 @end
