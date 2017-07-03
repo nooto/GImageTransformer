@@ -17,8 +17,11 @@
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
     // Insert code here to initialize your application
     [NSApplication sharedApplication].keyWindow.delegate = self;
-
+    
+    NSStoryboard *sb = [NSStoryboard storyboardWithName:@"main" bundle:nil];
+    self.rootController = [sb instantiateControllerWithIdentifier:@"ViewController"];
 }
+
 - (NSSize)windowWillResize:(NSWindow *)sender toSize:(NSSize)frameSize{
     NSLog(@"%f %f",frameSize.width, frameSize.height);
     return frameSize;
