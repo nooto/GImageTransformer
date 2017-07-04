@@ -332,6 +332,12 @@
 		// the application was provided this file when the user dragged this file on to the app
 	NSString *DesktopPath = [NSSearchPathForDirectoriesInDomains(NSDesktopDirectory, NSUserDomainMask, YES) firstObject];
 
+	NSString *homedic = NSHomeDirectory(); // 用户目录
+           NSString *userName = NSUserName(); // 用户目录
+             homedic =    NSHomeDirectoryForUser(userName); //指定用户名的用户目录
+             NSString *DesktopPath11 = [NSString stringWithFormat:@"%@/%@/%@", homedic, @"Desktop",@"ImageTransformer"];
+// -            NSLog(@"%@", DesktopPath);
+
 	BOOL isDirectory = NO;
 	BOOL fileExists = [[NSFileManager defaultManager] fileExistsAtPath:DesktopPath isDirectory:&isDirectory];
 	NSAssert(fileExists, @"File not found!");
