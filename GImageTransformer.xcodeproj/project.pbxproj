@@ -12,6 +12,9 @@
 		E20B5E291E694A4300549C19 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E20B5E281E694A4300549C19 /* ViewController.m */; };
 		E20B5E2B1E694A4300549C19 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E20B5E2A1E694A4300549C19 /* Assets.xcassets */; };
 		E20B5E2E1E694A4300549C19 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E20B5E2C1E694A4300549C19 /* Main.storyboard */; };
+		E27759051F0B6804001F5A90 /* AppSandboxFileAccess.m in Sources */ = {isa = PBXBuildFile; fileRef = E27759001F0B6804001F5A90 /* AppSandboxFileAccess.m */; };
+		E27759061F0B6804001F5A90 /* AppSandboxFileAccessOpenSavePanelDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E27759021F0B6804001F5A90 /* AppSandboxFileAccessOpenSavePanelDelegate.m */; };
+		E27759071F0B6804001F5A90 /* AppSandboxFileAccessPersist.m in Sources */ = {isa = PBXBuildFile; fileRef = E27759041F0B6804001F5A90 /* AppSandboxFileAccessPersist.m */; };
 		E2D4F90E1E6A9F9E00321650 /* NSImage+category.m in Sources */ = {isa = PBXBuildFile; fileRef = E2D4F90D1E6A9F9E00321650 /* NSImage+category.m */; };
 		E2D4F9111E6D03C500321650 /* NSImageProperyCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = E2D4F9101E6D03C500321650 /* NSImageProperyCellView.m */; };
 /* End PBXBuildFile section */
@@ -27,6 +30,12 @@
 		E20B5E2D1E694A4300549C19 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		E20B5E2F1E694A4300549C19 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E255DFEE1F0A8E6200B4DE8C /* 一键图标.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "一键图标.entitlements"; sourceTree = "<group>"; };
+		E27758FF1F0B6804001F5A90 /* AppSandboxFileAccess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppSandboxFileAccess.h; sourceTree = "<group>"; };
+		E27759001F0B6804001F5A90 /* AppSandboxFileAccess.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppSandboxFileAccess.m; sourceTree = "<group>"; };
+		E27759011F0B6804001F5A90 /* AppSandboxFileAccessOpenSavePanelDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppSandboxFileAccessOpenSavePanelDelegate.h; sourceTree = "<group>"; };
+		E27759021F0B6804001F5A90 /* AppSandboxFileAccessOpenSavePanelDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppSandboxFileAccessOpenSavePanelDelegate.m; sourceTree = "<group>"; };
+		E27759031F0B6804001F5A90 /* AppSandboxFileAccessPersist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppSandboxFileAccessPersist.h; sourceTree = "<group>"; };
+		E27759041F0B6804001F5A90 /* AppSandboxFileAccessPersist.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppSandboxFileAccessPersist.m; sourceTree = "<group>"; };
 		E2D4F90C1E6A9F9E00321650 /* NSImage+category.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSImage+category.h"; sourceTree = "<group>"; };
 		E2D4F90D1E6A9F9E00321650 /* NSImage+category.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSImage+category.m"; sourceTree = "<group>"; };
 		E2D4F90F1E6D03C500321650 /* NSImageProperyCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSImageProperyCellView.h; sourceTree = "<group>"; };
@@ -64,6 +73,7 @@
 			isa = PBXGroup;
 			children = (
 				E255DFEE1F0A8E6200B4DE8C /* 一键图标.entitlements */,
+				E27758FE1F0B6804001F5A90 /* SandboxAccess */,
 				E20B5E211E694A4300549C19 /* AppDelegate.h */,
 				E20B5E221E694A4300549C19 /* AppDelegate.m */,
 				E20B5E271E694A4300549C19 /* ViewController.h */,
@@ -86,6 +96,19 @@
 				E20B5E251E694A4300549C19 /* main.m */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		E27758FE1F0B6804001F5A90 /* SandboxAccess */ = {
+			isa = PBXGroup;
+			children = (
+				E27758FF1F0B6804001F5A90 /* AppSandboxFileAccess.h */,
+				E27759001F0B6804001F5A90 /* AppSandboxFileAccess.m */,
+				E27759011F0B6804001F5A90 /* AppSandboxFileAccessOpenSavePanelDelegate.h */,
+				E27759021F0B6804001F5A90 /* AppSandboxFileAccessOpenSavePanelDelegate.m */,
+				E27759031F0B6804001F5A90 /* AppSandboxFileAccessPersist.h */,
+				E27759041F0B6804001F5A90 /* AppSandboxFileAccessPersist.m */,
+			);
+			path = SandboxAccess;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -164,9 +187,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				E20B5E291E694A4300549C19 /* ViewController.m in Sources */,
+				E27759051F0B6804001F5A90 /* AppSandboxFileAccess.m in Sources */,
 				E20B5E261E694A4300549C19 /* main.m in Sources */,
 				E2D4F90E1E6A9F9E00321650 /* NSImage+category.m in Sources */,
+				E27759071F0B6804001F5A90 /* AppSandboxFileAccessPersist.m in Sources */,
 				E20B5E231E694A4300549C19 /* AppDelegate.m in Sources */,
+				E27759061F0B6804001F5A90 /* AppSandboxFileAccessOpenSavePanelDelegate.m in Sources */,
 				E2D4F9111E6D03C500321650 /* NSImageProperyCellView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

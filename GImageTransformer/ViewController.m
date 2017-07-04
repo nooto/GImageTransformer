@@ -17,6 +17,7 @@
 
 #import "NSImageProperyCellView.h"
 #import "NSImage+category.h"
+#import "AppSandboxFileAccess.h"
 
 @interface ViewController ()  <NSTableViewDataSource, NSTableViewDelegate, NSComboBoxDelegate, NSComboBoxDataSource, NSWindowDelegate,NSTextDelegate, NSDraggingDestination>
 @property (nonatomic, weak) IBOutlet  NSComboBox  *mComboBox;
@@ -105,6 +106,12 @@
     }
 }
 
+-(void)addNewImageWidthEqualToHight:(NSInteger)widht{
+	if (![self.mSourceData containsObject:@{KWIDTH:@(widht),KHIGHT:@(widht)}]) {
+		[self.mSourceData addObject:@{KWIDTH:@(widht),KHIGHT:@(widht)}];
+	}
+}
+
 -(void)addNewImageWithWidth:(NSInteger)widht hight:(NSInteger)hight{
     widht = labs(widht);
     hight = labs(hight);
@@ -152,6 +159,7 @@
     NSOpenPanel* panel = [NSOpenPanel openPanel];
     panel.allowedFileTypes = @[@"png", @"jpeg"];
     panel.allowsMultipleSelection = NO;
+	panel.prompt = @"选中";
 
     [panel beginSheetModalForWindow:[NSApplication sharedApplication].mainWindow completionHandler:^(NSInteger result) {
         if (result == NSModalResponseOK) {
@@ -196,34 +204,30 @@
     if (sender.tag == 1) {
         [self.mSourceData removeAllObjects];
 
-        [self addNewImageWithWidth:40 hight:40];
-        [self addNewImageWithWidth:60 hight:60];
 
-        [self addNewImageWithWidth:29 hight:29];
-        [self addNewImageWithWidth:87 hight:87];
+		[self addNewImageWidthEqualToHight:20];
+		[self addNewImageWidthEqualToHight:29];
+		[self addNewImageWidthEqualToHight:40];
+		[self addNewImageWidthEqualToHight:50];
 
-        [self addNewImageWithWidth:80 hight:80];
-        [self addNewImageWithWidth:120 hight:120];
+		[self addNewImageWidthEqualToHight:57];
 
-        [self addNewImageWithWidth:57 hight:57];
-        [self addNewImageWithWidth:114 hight:114];
+		[self addNewImageWidthEqualToHight:58];
+		[self addNewImageWidthEqualToHight:60];
+		[self addNewImageWidthEqualToHight:72];
+		[self addNewImageWidthEqualToHight:76];
 
-        [self addNewImageWithWidth:180 hight:180];
+		[self addNewImageWidthEqualToHight:80];
+		[self addNewImageWidthEqualToHight:87];
+		[self addNewImageWidthEqualToHight:100];
+		[self addNewImageWidthEqualToHight:114];
 
-        [self addNewImageWithWidth:120 hight:90];
-        [self addNewImageWithWidth:180 hight:135];
-
-        [self addNewImageWithWidth:134 hight:100];
-
-        [self addNewImageWithWidth:148 hight:110];
-
-        [self addNewImageWithWidth:54 hight:40];
-        [self addNewImageWithWidth:81 hight:60];
-
-        [self addNewImageWithWidth:64 hight:48];
-        [self addNewImageWithWidth:96 hight:72];
-
-        [self addNewImageWithWidth:1024 hight:768];
+		[self addNewImageWidthEqualToHight:120];
+		[self addNewImageWidthEqualToHight:144];
+		[self addNewImageWidthEqualToHight:152];
+		[self addNewImageWidthEqualToHight:167];
+		[self addNewImageWidthEqualToHight:180];
+		[self addNewImageWithWidth:1024 hight:768];  //itunes connect
 
         [self.mTableView reloadData];
     }
@@ -322,65 +326,94 @@
 
 }
 - (IBAction)createImageAction:(id)sender{
-    NSImage *sourceImage = [[NSImage alloc] initWithContentsOfFile:self.mComboBox.stringValue];
-    if (sourceImage.isValid) {
-        if (self.mSourceData.count) {
-            NSString *homedic = NSHomeDirectory(); // 用户目录
-            NSString *userName = NSUserName(); // 用户目录
-            homedic =    NSHomeDirectoryForUser(userName); //指定用户名的用户目录
-            NSString *DesktopPath = [NSString stringWithFormat:@"%@/%@/%@", homedic, @"Desktop",@"ImageTransformer"];
-            NSLog(@"%@", DesktopPath);
-            NSFileManager *fileManager =  [NSFileManager defaultManager];
-            [fileManager removeItemAtPath:DesktopPath error:nil];
-            [fileManager  createDirectoryAtPath:DesktopPath withIntermediateDirectories:yearMask attributes:nil error:nil];
+		// initialise the file access class
+	AppSandboxFileAccess *fileAccess = [AppSandboxFileAccess fileAccess];
 
-            for (NSInteger i = 0; i < self.mSourceData.count; i++) {
-                NSDictionary *dict =self.mSourceData[i];
-                if ([dict isKindOfClass:[NSDictionary class]]) {
-//                    NSImage  *newImage = [NSImage imageResize:sourceImage newSize:CGSizeMake([dict[KWIDTH] integerValue], [dict[KHIGHT] integerValue])];
-                    NSImage  *newImage = [NSImage resizeImage:sourceImage size:CGSizeMake([dict[KWIDTH] integerValue], [dict[KHIGHT] integerValue])];
-                    NSString *newPath = [NSString stringWithFormat:@"%@/%@.png", DesktopPath,
+		// the application was provided this file when the user dragged this file on to the app
+	NSString *DesktopPath = [NSSearchPathForDirectoriesInDomains(NSDesktopDirectory, NSUserDomainMask, YES) firstObject];
 
-                                         [NSString stringWithFormat:@"%ld*%ld",
-                                          [dict[KWIDTH] integerValue],
-                                          [dict[KHIGHT] integerValue]]
-                                         ];
-                    [newImage saveImage:newImage ToTarget:newPath];
-                }
-            }
+	BOOL isDirectory = NO;
+	BOOL fileExists = [[NSFileManager defaultManager] fileExistsAtPath:DesktopPath isDirectory:&isDirectory];
+	NSAssert(fileExists, @"File not found!");
 
-            NSAlert  *alert = [[NSAlert alloc] init];
-            alert.icon = [NSImage imageNamed:@"AppIcon"];
-            [alert setMessageText:@"生成成功，点击查看"];
-            [alert addButtonWithTitle:@"查看"];
-            [alert addButtonWithTitle:@"取消"];
+		// persist permission to access the file the user introduced to the app, so we can always
+		// access it and then the AppSandboxFileAccess class won't prompt for it if you wrap access to it
+	[fileAccess persistPermissionPath:DesktopPath];
 
-            [alert beginSheetModalForWindow:[NSApplication sharedApplication].keyWindow completionHandler:^(NSModalResponse returnCode) {
+		// get the parent directory for the file
+	NSString *directory = (isDirectory) ? DesktopPath : [DesktopPath stringByDeletingLastPathComponent];
 
-                if(returnCode == abs(NSModalResponseStop)){
-                    [[NSWorkspace sharedWorkspace] openFile:DesktopPath]; // 使用默认程序打开文件
-                }
-                else if(returnCode == abs(NSModalResponseAbort)){
+		// get access to the parent directory
+	BOOL accessAllowed = [fileAccess accessFilePath:directory persistPermission:YES withBlock:^{
+		[self readyToSaveImages:DesktopPath];
+	}];
 
-                }
+	if (!accessAllowed) {
+		NSLog(@"Sad Wookie");
+	}
 
-            }];
-        }
-        else{
-            NSAlert  *alert = [[NSAlert alloc] init];
-            alert.icon = [NSImage imageNamed:@"AppIcon"];
-            [alert setMessageText:@"请指定要生成的图片尺寸"];
-            [alert addButtonWithTitle:@"确定"];
-            [alert runModal];
-        }
-    }
-    else{
-        NSAlert  *alert = [[NSAlert alloc] init];
-        alert.icon = [NSImage imageNamed:@"AppIcon"];
-        [alert setMessageText:@"没有选择源图片"];
-        [alert addButtonWithTitle:@"确定"];
-        [alert runModal];
-    }
+
+	return;
+}
+
+-(void)readyToSaveImages:(NSString*)DesktopPath{
+	NSImage *sourceImage = [[NSImage alloc] initWithContentsOfFile:self.mComboBox.stringValue];
+	if (sourceImage.isValid) {
+		if (self.mSourceData.count) {
+
+				//确保生成子文件夹
+			NSString *destPath = [NSString stringWithFormat:@"%@/%@", DesktopPath,@"ImageTransformer"];
+			NSFileManager *fileManager =  [NSFileManager defaultManager];
+			[fileManager removeItemAtPath:destPath error:nil];
+			BOOL isSuccess = NO; NSError *error = nil;
+			isSuccess =  [fileManager  createDirectoryAtPath:destPath withIntermediateDirectories:yearMask attributes:nil error:&error];
+
+			for (NSInteger i = 0; i < self.mSourceData.count; i++) {
+				NSDictionary *dict =self.mSourceData[i];
+				if ([dict isKindOfClass:[NSDictionary class]]) {
+					NSImage  *newImage = [NSImage resizeImage:sourceImage size:CGSizeMake([dict[KWIDTH] integerValue], [dict[KHIGHT] integerValue])];
+						//写入制定的文件中。。。
+					NSString *newPath = [NSString stringWithFormat:@"%@/%@.png", destPath,
+										 [NSString stringWithFormat:@"%ld*%ld",
+										  [dict[KWIDTH] integerValue],
+										  [dict[KHIGHT] integerValue]]
+										 ];
+					[newImage saveImage:newImage ToTarget:newPath];
+				}
+			}
+
+			NSAlert  *alert = [[NSAlert alloc] init];
+			alert.icon = [NSImage imageNamed:@"AppIcon"];
+			[alert setMessageText:@"生成成功，点击查看"];
+			[alert addButtonWithTitle:@"查看"];
+			[alert addButtonWithTitle:@"取消"];
+
+			[alert beginSheetModalForWindow:[NSApplication sharedApplication].keyWindow completionHandler:^(NSModalResponse returnCode) {
+
+				if(returnCode == abs(NSModalResponseStop)){
+					[[NSWorkspace sharedWorkspace] openFile:destPath]; // 使用默认程序打开文件
+				}
+				else if(returnCode == abs(NSModalResponseAbort)){
+
+				}
+
+			}];
+		}
+		else{
+			NSAlert  *alert = [[NSAlert alloc] init];
+			alert.icon = [NSImage imageNamed:@"AppIcon"];
+			[alert setMessageText:@"请指定要生成的图片尺寸"];
+			[alert addButtonWithTitle:@"确定"];
+			[alert runModal];
+		}
+	}
+	else{
+		NSAlert  *alert = [[NSAlert alloc] init];
+		alert.icon = [NSImage imageNamed:@"AppIcon"];
+		[alert setMessageText:@"没有选择源图片"];
+		[alert addButtonWithTitle:@"确定"];
+		[alert runModal];
+	}
 }
 
 @end

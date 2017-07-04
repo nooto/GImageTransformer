@@ -18,7 +18,7 @@
     // Insert code here to initialize your application
     [NSApplication sharedApplication].keyWindow.delegate = self;
     
-    NSStoryboard *sb = [NSStoryboard storyboardWithName:@"main" bundle:nil];
+    NSStoryboard *sb = [NSStoryboard storyboardWithName:@"Main" bundle:nil];
     self.rootController = [sb instantiateControllerWithIdentifier:@"ViewController"];
 }
 
