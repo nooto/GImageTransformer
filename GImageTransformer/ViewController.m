@@ -326,7 +326,11 @@
 
 }
 - (IBAction)createImageAction:(id)sender{
-		// initialise the file access class
+
+	[self readyToSaveImages:nil];
+
+	/*
+	 	// initialise the file access class
 	AppSandboxFileAccess *fileAccess = [AppSandboxFileAccess fileAccess];
 
 		// the application was provided this file when the user dragged this file on to the app
@@ -360,6 +364,9 @@
 
 
 	return;
+	 
+	 //*/
+
 }
 
 -(void)readyToSaveImages:(NSString*)DesktopPath{
@@ -367,6 +374,7 @@
 	if (sourceImage.isValid) {
 		if (self.mSourceData.count) {
 
+			/*
 				//确保生成子文件夹
 			NSString *destPath = [NSString stringWithFormat:@"%@/%@", DesktopPath,@"ImageTransformer"];
 			NSFileManager *fileManager =  [NSFileManager defaultManager];
@@ -397,13 +405,15 @@
 			[alert beginSheetModalForWindow:[NSApplication sharedApplication].keyWindow completionHandler:^(NSModalResponse returnCode) {
 
 				if(returnCode == abs(NSModalResponseStop)){
-					[[NSWorkspace sharedWorkspace] openFile:destPath]; // 使用默认程序打开文件
+					[[NSWorkspace sharedWorkspace] openFile:destPath];  使用默认程序打开文件
 				}
 				else if(returnCode == abs(NSModalResponseAbort)){
 
 				}
 
 			}];
+					 */
+
 		}
 		else{
 			NSAlert  *alert = [[NSAlert alloc] init];
