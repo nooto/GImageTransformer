@@ -12,7 +12,7 @@
 + (NSImage *)imageResize:(NSImage*)anImage newSize:(NSSize)newSize;
 + (NSImage*) resizeImage:(NSImage*)sourceImage size:(NSSize)size;
 
-- (BOOL)saveImage:(NSImage*)image                      //source image
-         ToTarget:(NSString *) targePath;               //save path
+- (BOOL)saveImage:(NSImage*)image ToTarget:(NSString *)targePath;               //save path
+- (BOOL)saveImage:(NSImage*)image ToTarget:(NSString *)targePath ToWidth:(NSInteger)width ToHight:(NSInteger)hight;//save path
 
 @end

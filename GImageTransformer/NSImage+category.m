@@ -172,8 +172,7 @@
                   operation:NSCompositingOperationCopy  //compositing operation
                    fraction:1.0              //alpha (transparency) value
              respectFlipped:YES              //coordinate system
-                      hints:@{NSImageHintInterpolation:
-                                  [NSNumber numberWithInt:NSImageInterpolationLow]}];
+                      hints:@{NSImageHintInterpolation: [NSNumber numberWithInt:NSImageInterpolationHigh]}];
 
 
     [targetImage unlockFocus];
@@ -200,19 +199,71 @@
     return nil;
 }
 
-    //save image to file
-- (BOOL)saveImage:(NSImage*)image                      //source image
-         ToTarget:(NSString *) targePath               //save path
+- (BOOL)saveImage:(NSImage*)image ToTarget:(NSString *)targePath
 {
-    NSData *tempdata;
-    NSBitmapImageRep *srcImageRep;
-    BOOL reflag = NO;
+//    [image lockFocus];
+//    //先设置 下面一个实例
+//    NSBitmapImageRep *bits = [[NSBitmapImageRep alloc]initWithFocusedViewRect:NSMakeRect(0, 0, 138, 32)];        //138.32为图片的长和宽
+//    [image unlockFocus];
+//    //再设置后面要用到得 props属性
+//    NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:0] forKey:NSImageCompressionFactor];
+//
+//    //之后 转化为NSData 以便存到文件中
+//    NSData *imageData = [bits representationUsingType:NSPNGFileType properties:imageProps];
+//    //设定好文件路径后进行存储就ok了
+//    BOOL y = [imageData writeToFile:[[NSString stringWithString:@"~/Documents/test.png"] stringByExpandingTildeInPath]atomically:YES];    //保存的文件路径一定要是绝对路径，相对路径不行
+//    NSLog(@"Save Image: %d", y);
+    
     [image lockFocus];
-    srcImageRep = [NSBitmapImageRep imageRepWithData:[image TIFFRepresentation]];
-    tempdata = [srcImageRep representationUsingType:NSBitmapImageFileTypePNG properties:@{NSImageCompressionFactor:@(1)}];
-    reflag = [tempdata writeToFile:targePath atomically:YES];
+    //先设置 下面一个实例
+    NSBitmapImageRep *bits = [[NSBitmapImageRep alloc]initWithFocusedViewRect:NSMakeRect(0, 0, image.size.width, image.size.height)];
+    [bits setAlpha:NO];
     [image unlockFocus];
-    return reflag;
+    
+    //再设置后面要用到得 props属性
+    NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:1.0] forKey:NSImageCompressionFactor];
+    
+    //之后 转化为NSData 以便存到文件中
+    NSData *imageData = [bits representationUsingType:NSJPEGFileType properties:imageProps];
+    
+    //设定好文件路径后进行存储就ok了
+    BOOL y = [imageData writeToFile:targePath atomically:YES];    //保存的文件路径一定要是绝对路径，相对路径不行
+    NSLog(@"Save Image: %d", y);
+    return y;
+}
+
+- (BOOL)saveImage:(NSImage*)image                      //source image
+         ToTarget:(NSString *) targePath
+
+          ToWidth:(NSInteger)width ToHight:(NSInteger)hight{
+    //save image to file
+//- (BOOL)saveImage:(NSImage*)image                      //source image
+//         ToTarget:(NSString *) targePath               //save path
+//{
+//    NSData *tempdata;
+//    NSBitmapImageRep *srcImageRep;
+//    BOOL reflag = NO;
+//    [image lockFocus];
+//
+//    srcImageRep = [NSBitmapImageRep imageRepWithData:[image TIFFRepresentation]];
+//    tempdata = [srcImageRep representationUsingType:NSBitmapImageFileTypePNG properties:@{NSImageCompressionFactor:@(1)}];
+//    reflag = [tempdata writeToFile:targePath atomically:YES];
+//    [image unlockFocus];
+//    return reflag;
+    
+    [image lockFocus];
+    //先设置 下面一个实例
+    NSBitmapImageRep *bits = [[NSBitmapImageRep alloc]initWithFocusedViewRect:NSMakeRect(0, 0, width, hight)];        //138.32为图片的长和宽
+    [image unlockFocus];
+    //再设置后面要用到得 props属性
+    NSDictionary *imageProps = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:0] forKey:NSImageCompressionFactor];
+    
+    //之后 转化为NSData 以便存到文件中
+    NSData *imageData = [bits representationUsingType:NSPNGFileType properties:imageProps];
+    //设定好文件路径后进行存储就ok了
+    BOOL y = [imageData writeToFile:targePath atomically:YES];    //保存的文件路径一定要是绝对路径，相对路径不行
+    NSLog(@"Save Image: %d", y);
+    return y;
 }
 
 
